@@ -2,9 +2,9 @@
 
 🔗 **Sitio Web en Vivo:** [https://fullstack-gitclass.onrender.com](https://fullstack-gitclass.onrender.com)
 
-Este proyecto es una aplicación React (scaffolded con Vite) para la materia **Desarrollo FullStack III**, específicamente para la clase de **Estrategias de Branching y Gestión de Componentes** en Duoc UC. Su propósito es enseñar el flujo de trabajo colaborativo usando Git (Manejo de Ramas, Pull Requests, y CI/CD).
+Este proyecto es una aplicación React (scaffolded con Vite) para aprender **Git, GitHub y Control de Versiones** en Duoc UC. Su propósito es enseñar el flujo de trabajo colaborativo usando Git (Manejo de Ramas, Pull Requests, y CI/CD).
 
-> *"El código brillante se escribe en equipo. Cada rama es una idea y cada merge, un logro compartido."*
+> *"Cada commit cuenta una historia. Cada merge construye el legado."*
 
 ## 🚀 Cómo agregar tu tarjeta (Para los Estudiantes)
 
@@ -24,9 +24,27 @@ Este proyecto es una aplicación React (scaffolded con Vite) para la materia **D
         "usuario_github": "tu-usuario-de-github",
         "comentario_libre": "Un breve mensaje o biografía (máx. 150 caracteres).",
         "color": "#FFB81C",
-        "Seccion": "001D"
+
+        "apodo": "El Bug Slayer",
+        "emoji": "🚀",
+        "frase_motivacional": "Compila a la primera (casi nunca)",
+
+        "lenguaje_favorito": "JavaScript",
+        "hobby": "Gaming",
+        "comida_favorita": "Pizza",
+
+        "superpoder": "Encontrar bugs en producción",
+        "nivel_programador": "junior",
+        "estado_actual": "Buscando práctica"
       }
       ```
+
+    **Campos obligatorios:** `nombre_completo`, `usuario_github`, `comentario_libre`
+
+    **Campos opcionales:** `color`, `apodo`, `emoji`, `frase_motivacional`, `lenguaje_favorito`, `hobby`, `comida_favorita`, `superpoder`, `nivel_programador`, `estado_actual`
+
+    > **Nota:** El campo `nivel_programador` solo acepta: `trainee`, `junior`, `mid`, `senior`, `lead`.
+
 5. **Realiza un Commit**: `git commit -m "Agrega tarjeta de Tu Nombre"`
 6. **Sube los cambios (Push)**: `git push origin feature/agregar-tunombre`
 7. **Crea un Pull Request (PR)** hacia la rama principal (`main`) de este repositorio.
@@ -56,4 +74,4 @@ Una vez que tu PR sea aprobado y mezclado (merged), un sistema de CI/CD redesple
 
 ---
 **Institución:** Duoc UC  
-**Curso:** Git & CI/CD
+**Curso:** Git, GitHub & Control de Versiones

@@ -52,6 +52,20 @@ describe('Collaborators JSON Format', () => {
     return forbiddenWords.some(word => normalized.includes(word));
   }
 
+  // Campos de texto libre que deben ser escaneados por contenido ofensivo
+  const textFieldsToScan = [
+    'nombre_completo',
+    'comentario_libre',
+    'apodo',
+    'frase_motivacional',
+    'lenguaje_favorito',
+    'hobby',
+    'comida_favorita',
+    'superpoder',
+    'nivel_programador',
+    'estado_actual'
+  ];
+
   // Generamos dinámicamente un bloque de pruebas por cada archivo encontrado
   studentFiles.forEach(file => {
     describe(`Evaluando archivo: ${file}`, () => {
@@ -92,33 +106,65 @@ describe('Collaborators JSON Format', () => {
         expect(data).toHaveProperty('comentario_libre');
         expect(typeof data.comentario_libre).toBe('string');
         expect(data.comentario_libre.length).toBeLessThanOrEqual(150, 'El comentario debe tener 150 caracteres o menos');
+      });
 
-        // Validar Sección según reglas estrictas de autorización
-        expect(data).toHaveProperty('Seccion');
-        expect(typeof data.Seccion).toBe('string');
-        
-        if (file.toLowerCase() === 'ericramirezs.json') {
-          expect(data.Seccion).toBe('Profesor', 'El perfil de Eric Ramirez debe tener el distintivo de "Profesor"');
-        } else {
-          const validStudentSections = ['001D', '003D'];
-          expect(validStudentSections).toContain(data.Seccion, `La Sección es inválida. Solo se admite '001D' o '003D'. Recibido: ${data.Seccion}`);
+      it('los campos opcionales, si existen, deben tener tipo y longitud válidos', () => {
+        const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+
+        // Validar campos opcionales de texto libre
+        const optionalTextFields = {
+          apodo: 40,
+          frase_motivacional: 120,
+          lenguaje_favorito: 30,
+          hobby: 50,
+          comida_favorita: 50,
+          superpoder: 80,
+          nivel_programador: 20,
+          estado_actual: 50
+        };
+
+        for (const [field, maxLen] of Object.entries(optionalTextFields)) {
+          if (data[field] !== undefined) {
+            expect(typeof data[field]).toBe('string', `El campo '${field}' debe ser un string`);
+            expect(data[field].length).toBeLessThanOrEqual(maxLen, `El campo '${field}' excede el máximo de ${maxLen} caracteres`);
+          }
+        }
+
+        // Validar emoji si existe (debe ser un string corto)
+        if (data.emoji !== undefined) {
+          expect(typeof data.emoji).toBe('string', 'El campo emoji debe ser un string');
+          expect(data.emoji.length).toBeLessThanOrEqual(4, 'El emoji debe tener máximo 4 caracteres');
+        }
+
+        // Validar nivel_programador si existe (valores válidos)
+        if (data.nivel_programador !== undefined) {
+          const validLevels = ['trainee', 'junior', 'mid', 'senior', 'lead'];
+          expect(validLevels).toContain(
+            data.nivel_programador.toLowerCase(),
+            `nivel_programador inválido: '${data.nivel_programador}'. Valores válidos: ${validLevels.join(', ')}`
+          );
         }
       });
 
       it('no debe contener lenguaje ofensivo, racista, xenófobo ni menciones a figuras polémicas', () => {
         const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 
-        const isNameClean = !containsForbiddenWords(data.nombre_completo);
-        const isBioClean = !containsForbiddenWords(data.comentario_libre);
-
-        expect(isNameClean).toBe(true, `El nombre de ${file} contiene lenguaje inapropiado o figuras polémicas.`);
-        expect(isBioClean).toBe(true, `La biografía de ${file} contiene lenguaje inapropiado o figuras polémicas.`);
+        for (const field of textFieldsToScan) {
+          if (data[field]) {
+            const isClean = !containsForbiddenWords(data[field]);
+            expect(isClean).toBe(true, `El campo '${field}' de ${file} contiene lenguaje inapropiado o figuras polémicas.`);
+          }
+        }
       });
 
-      it('no debe contener inyección HTML / XSS (uso malicioso de < o >)', () => {
+      it('no debe contener inyección HTML / XSS en ningún campo de texto (uso malicioso de < o >)', () => {
         const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-        expect(data.nombre_completo).not.toMatch(/[<>]/);
-        expect(data.comentario_libre).not.toMatch(/[<>]/);
+
+        for (const field of textFieldsToScan) {
+          if (data[field]) {
+            expect(data[field]).not.toMatch(/[<>]/, `El campo '${field}' contiene caracteres HTML potencialmente peligrosos`);
+          }
+        }
       });
 
       it('el campo color es opcional, pero si existe debe ser un string válido y seguro (Prevención Inyección CSS)', () => {

@@ -9,7 +9,6 @@ const jsonFiles = import.meta.glob('./collaborators/*.json', { eager: true });
 function App() {
   const canvasRef = useRef(null);
   const [collaborators, setCollaborators] = useState([]);
-  const [filter, setFilter] = useState('Todas');
   const [visibleLogs, setVisibleLogs] = useState([]);
   const [logs, setLogs] = useState([]);
   const [showTerminal, setShowTerminal] = useState(true);
@@ -23,19 +22,19 @@ function App() {
 
     setCollaborators(loadedCollaborators);
 
-    const sequence = ["> iniciando sistema...", "> cargando colaboradores..."];
+    const sequence = ["> git init sistema...", "> git fetch colaboradores..."];
 
     // Usamos encadenamiento opcional (?.) para evitar el error de 'undefined'
     loadedCollaborators.forEach((c) => {
       if (c?.nombre_completo) {
-        sequence.push(`> cargando: ${c.nombre_completo} ✔`);
+        sequence.push(`> git add: ${c.nombre_completo} ✔`);
       }
     });
 
     sequence.push(
-      "> validando commits...",
-      "> sincronizando repositorio...",
-      "✔ ACCESO CONCEDIDO",
+      "> git commit -m 'validando perfiles'...",
+      "> git push origin main...",
+      "✔ DEPLOY EXITOSO",
       "> renderizando interfaz..."
     );
 
@@ -104,31 +103,24 @@ function App() {
     return () => clearInterval(interval);
   }, [logs]);
 
-  const uniqueSections = [...new Set(collaborators.map(c => c.Seccion).filter(Boolean))].sort();
-  const availableSections = ['Todas', ...uniqueSections];
-
-  const filteredCollaborators = filter === 'Todas'
-    ? collaborators
-    : collaborators.filter(c => c.Seccion === filter || c.Seccion === "Profesor");
-
   return (
     <div className="app-container">
 
       <header className="app-header matrix-enhanced">
         <canvas ref={canvasRef} id="matrixCanvas" />
         <h1 className="glow-title">
-          Aquí se forjan los mejores desarrolladores FullStack
+          Domina Git &amp; GitHub — Tu primer paso en el mundo tech
         </h1>
 
         <div className="course-info">
           <h2>Generación 2026 · Duoc UC</h2>
           <p className="course-subtitle">
-            Desarrollo FullStack III — Estrategias de Branching y Gestión de Componentes
+            Git, GitHub &amp; Control de Versiones — Fundamentos de Informática
           </p>
         </div>
 
         <p className="institutional-motto">
-          Código, disciplina y trabajo en equipo.
+          Versiona, colabora y construye en equipo.
         </p>
 
         <div className="quote-container">
@@ -144,7 +136,7 @@ function App() {
             <div className="terminal-container">
               {visibleLogs.map((line, index) => {
                 // Verificación ultra-segura
-                const isSuccess = line && typeof line === 'string' && line.includes("ACCESO");
+                const isSuccess = line && typeof line === 'string' && line.includes("DEPLOY");
 
                 return (
                   <p
@@ -159,28 +151,9 @@ function App() {
           </div>
         ) : (
           <>
-            {collaborators.length > 0 && (
-              <div className="filter-container">
-                <span className="filter-label">Filtrar por Sección:</span>
-                <div className="filter-buttons">
-                  {availableSections
-                    .filter(sec => sec !== "Profesor")
-                    .map(sec => (
-                      <button
-                        key={sec}
-                        className={`filter-btn ${filter === sec ? 'active' : ''}`}
-                        onClick={() => setFilter(sec)}
-                      >
-                        {sec}
-                      </button>
-                    ))}
-                </div>
-              </div>
-            )}
-
             <div className="collaborators-grid fade-in">
-              {filteredCollaborators.length > 0 ? (
-                filteredCollaborators.map((collab, index) => (
+              {collaborators.length > 0 ? (
+                collaborators.map((collab, index) => (
                   <CollaboratorCard
                     key={collab.usuario_github}
                     data={collab}
@@ -198,7 +171,7 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <p>© {new Date().getFullYear()} Duoc UC - Clase de Git y Branching</p>
+        <p>© {new Date().getFullYear()} Duoc UC - Git, GitHub & Control de Versiones</p>
       </footer>
     </div>
   );

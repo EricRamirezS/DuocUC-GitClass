@@ -8,7 +8,15 @@ describe('CollaboratorCard', () => {
     usuario_github: 'testuser123',
     comentario_libre: 'This is a test bio.',
     color: '#123456',
-    Seccion: '003D'
+    apodo: 'The Debugger',
+    emoji: '🚀',
+    frase_motivacional: 'Ship it!',
+    lenguaje_favorito: 'Python',
+    nivel_programador: 'junior',
+    estado_actual: 'Estudiando',
+    hobby: 'Gaming',
+    comida_favorita: 'Sushi',
+    superpoder: 'Leer logs'
   };
 
   it('renders collaborator information correctly', () => {
@@ -16,7 +24,6 @@ describe('CollaboratorCard', () => {
     
     expect(screen.getByText('Test User')).toBeInTheDocument();
     expect(screen.getByText('This is a test bio.')).toBeInTheDocument();
-    expect(screen.getByText('003D')).toBeInTheDocument();
     
     const link = screen.getByRole('link', { name: /ver perfil de github/i });
     expect(link).toHaveAttribute('href', 'https://github.com/testuser123');
@@ -46,5 +53,53 @@ describe('CollaboratorCard', () => {
     
     const card = container.querySelector('.collaborator-card');
     expect(card).toHaveStyle('border-width: 0');
+  });
+
+  it('renders emoji and nickname when provided', () => {
+    render(<CollaboratorCard data={mockData} />);
+    
+    expect(screen.getByText('🚀')).toBeInTheDocument();
+    expect(screen.getByText('The Debugger')).toBeInTheDocument();
+  });
+
+  it('renders dev identity badges (language, level, status)', () => {
+    render(<CollaboratorCard data={mockData} />);
+    
+    expect(screen.getByText(/Python/)).toBeInTheDocument();
+    expect(screen.getByText(/junior/)).toBeInTheDocument();
+    expect(screen.getByText(/Estudiando/)).toBeInTheDocument();
+  });
+
+  it('renders motivational quote when provided', () => {
+    render(<CollaboratorCard data={mockData} />);
+    
+    expect(screen.getByText(/Ship it!/)).toBeInTheDocument();
+  });
+
+  it('renders personal details (superpoder, hobby, comida)', () => {
+    render(<CollaboratorCard data={mockData} />);
+    
+    expect(screen.getByText(/Leer logs/)).toBeInTheDocument();
+    expect(screen.getByText(/Gaming/)).toBeInTheDocument();
+    expect(screen.getByText(/Sushi/)).toBeInTheDocument();
+  });
+
+  it('handles missing optional fields gracefully', () => {
+    const minimalData = {
+      nombre_completo: 'Minimal User',
+      usuario_github: 'minimaluser',
+      comentario_libre: 'Just basics.'
+    };
+    
+    const { container } = render(<CollaboratorCard data={minimalData} />);
+    
+    expect(screen.getByText('Minimal User')).toBeInTheDocument();
+    expect(screen.getByText('Just basics.')).toBeInTheDocument();
+    // No badges, no quote, no details should render
+    expect(container.querySelector('.card-badges')).toBeNull();
+    expect(container.querySelector('.card-quote')).toBeNull();
+    expect(container.querySelector('.card-details')).toBeNull();
+    expect(container.querySelector('.card-emoji')).toBeNull();
+    expect(container.querySelector('.card-nickname')).toBeNull();
   });
 });

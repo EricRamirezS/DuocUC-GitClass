@@ -15,9 +15,9 @@ vi.mock('./collaborators/*.json', () => {
 });
 
 describe('App', () => {
-  it('renders the header with course information', () => {
+  it('renders the header with Git/GitHub course information', () => {
     render(<App />);
-    expect(screen.getByText('Aquí se forjan los mejores desarrolladores FullStack')).toBeInTheDocument();
+    expect(screen.getByText(/Domina Git/)).toBeInTheDocument();
   });
 
   it('renders collaborator cards and ignores the template', () => {

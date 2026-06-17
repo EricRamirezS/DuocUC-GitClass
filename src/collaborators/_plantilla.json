@@ -3,5 +3,16 @@
   "usuario_github": "tu-usuario-de-github",
   "comentario_libre": "Un breve mensaje o biografía (máx. 150 caracteres).",
   "color": "#FFB81C",
-  "Seccion": "001D"
+
+  "apodo": "El Bug Slayer",
+  "emoji": "🚀",
+  "frase_motivacional": "Compila a la primera (casi nunca)",
+
+  "lenguaje_favorito": "JavaScript",
+  "hobby": "Gaming",
+  "comida_favorita": "Pizza",
+
+  "superpoder": "Encontrar bugs en producción",
+  "nivel_programador": "junior",
+  "estado_actual": "Buscando práctica"
 }
